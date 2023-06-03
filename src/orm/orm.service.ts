@@ -35,8 +35,11 @@ export class OrmService<T>{
     }
 
     async findUnique(whereParams: any): Promise<T>{
-        console.log(whereParams)
         return await this._db[this._table].findUnique({where:whereParams})
+    }
+
+    async findFirst(whereParams: any): Promise<T>{
+        return await this._db[this._table].findFirst({where:whereParams})
     }
 
     async delete(id: number|any){
