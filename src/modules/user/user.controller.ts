@@ -1,6 +1,7 @@
-import { Body, Controller, Post, Get, Query, Param, Patch, Delete } from "@nestjs/common";
+import { Body, Controller, Post, Get, Query, Param, Patch, Delete, Req } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { jwtAuthorize } from "src/auth/decorator/jwt.decorator";
+import { Request } from "express";
 
 @Controller("/users")
 export class UserController {
@@ -8,7 +9,7 @@ export class UserController {
 
     @jwtAuthorize()
     @Get('/')
-    async userList(@Query() data: any){
+    async userList(@Query() data: any, @Req() request: Request){
         return await this._userService.userList(data)
     }
 

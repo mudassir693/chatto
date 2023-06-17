@@ -10,9 +10,7 @@ export class ApplicationGuard extends AuthGuard('jwt'){
 
     canActivate(context: ExecutionContext){
         const authorize = this.reflector.get('authorize',context.getHandler())
-        console.log(authorize)
         if (!authorize) return true;
-    
         return super.canActivate(context);
     }
 

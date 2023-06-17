@@ -3,11 +3,13 @@ import { user } from "@prisma/client";
 import { OrmService } from "src/orm/orm.service";
 import { CreateAccessToken } from "src/utills/jwt.utills";
 import { UserLoginRequest, UserSignUpRequest } from "./dto/request.dto";
+import { RedisService } from "src/cache/redis.service";
+import { redisAuthUser } from "src/utills/redis.utills";
 
 
 @Injectable()
 export class AuthService {
-    constructor(private _ormService: OrmService<user>){
+    constructor(private _ormService: OrmService<user>, private _cacheService: RedisService ){
         this._ormService.setTableName('user')
     }
 
@@ -28,6 +30,9 @@ export class AuthService {
             id: CreateUser.id,
             email: CreateUser.email
         })
+
+        await this._cacheService.Set(redisAuthUser(CreateUser.id), CreateUser.email)
+        
         return {
             AccessToken: token
         }
