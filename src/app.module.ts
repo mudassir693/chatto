@@ -23,7 +23,7 @@ import { ConfigService } from '@nestjs/config';
     JwtModule.register({}),
     CacheModule.register<RedisClientOptions>({
       isGlobal:true,
-      ttl: 5,
+      ttl: 500000,
       store: redisStore.redisStore,
       host: 'localhost',
       port: 6379,

@@ -32,7 +32,7 @@ export class AuthService {
         })
 
         await this._cacheService.Set(redisAuthUser(CreateUser.id), CreateUser.email)
-        
+        console.log(await this._cacheService.Get(redisAuthUser(CreateUser.id)))
         return {
             AccessToken: token
         }

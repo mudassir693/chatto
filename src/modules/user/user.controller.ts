@@ -1,15 +1,23 @@
-import { Body, Controller, Post, Get, Query, Param, Patch, Delete, Req } from "@nestjs/common";
+import { Body, Controller, Post, Get, Query, Param, Patch, Delete, Req, BadRequestException } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { jwtAuthorize } from "src/auth/decorator/jwt.decorator";
 import { Request } from "express";
+import { CurrentUser } from "src/auth/decorator/current.user.decorator";
+import { RedisService } from "src/cache/redis.service";
+import { redisAuthUser } from "src/utills/redis.utills";
 
 @Controller("/users")
 export class UserController {
-    constructor(private _userService: UserService){}
+    constructor(private _userService: UserService, private _redisService: RedisService){}
 
     @jwtAuthorize()
     @Get('/')
-    async userList(@Query() data: any, @Req() request: Request){
+    async userList(@Query() data: any, @Req() request: Request, @CurrentUser() user){
+        console.log('okay: ',redisAuthUser(user.id))
+        const redisAuth = await this._redisService.Get(redisAuthUser(user.id))
+        if(user.email !== redisAuth){
+            throw new BadRequestException()
+        }
         return await this._userService.userList(data)
     }
 
